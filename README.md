@@ -1,8 +1,31 @@
-# Guide to Rust's tracing library.
+# A Primer to Tracing
+
+> Tokio's Tracing crate guide and explanation
+
+## Disclaimer
+First thing first, this primer is authored by a non-contributor conmmuntiy member and represent my own thoughts and not contributors, maintainers or authors of the [Tracing](https://github.com/tokio-rs) crate or any relatated crates. 
+
+Furthermore, all material here will be based on [Tracing version 0.1](https://github.com/tokio-rs/tracing/tree/v0.1.x) and as such all links will refer to pages related to Tracing's version 0.1 . At the time of writing, Tokio version 0.2 is unreleased.
 
 ## Introduction
 
-Tracing has estabished itself as the go-to library for logging in Rust community. It's unique capability to provide structured, contextual logs in an asynchronous environments sets it apart from alternative logging crates. Nevertheless, I always struggle with its Documentation. So, here is my primer to the `tracing` crate.
+This is a guide and conceptual explaination of Tokio's [Tracing](https://github.com/tokio-rs/tracing/tree/v0.1x) crate and will not be a reference or a tutorial. Please refer to [Tracing's documentation](https://docs.rs/tracing/latest/tracing/) for a reference and more in-depth treatment of the [Tracing](https://github.com/tokio-rs/tracing/v0.1x) crate.
+
+## 5 min Quick Start Guide
+
+In a Rust project in a shell of your choosing, add the dependencies
+
+```shell
+cargo add tracing tracing-subscriber
+```
+
+then in your rust 
+
+
+
+## Introduction
+
+[Tracing](https://github.com/tokio-rs/tracing) has estabished itself as the go-to library for logging in Rust community. It's unique capability to provide structured, contextual logs in an asynchronous environments sets it apart from alternative logging crates. Nevertheless, I always struggle with its Documentation. So, here is my primer to the `tracing` crate.
 
 ## Tracing's Sale Pitch
 
@@ -10,7 +33,7 @@ Here is a modified snippet of a [blog post](https://tokio.rs/blog/2019-08-tracin
 
 If you normally see logs similar to the following:
 
-```
+```shell
 DEBUG server: accepted connection from 106.42.126.8:56975
 DEBUG server: closing connection
 DEBUG server::http: received request
@@ -23,7 +46,7 @@ TRACE server: closing connection
 
 And you also agree that it is hard to track activaty for any particular IP address then the `tracing` crate can upgrade your logs:
 
-```
+```shell
 DEBUG server{client.addr=106.42.126.8:56975}: accepted connection
 DEBUG server{client.addr=82.5.70.2:53121}: closing connection
 DEBUG server{client.addr=89.56.1.12:55601} request{path="/posts/tracing" method=GET}: received request
@@ -34,7 +57,7 @@ DEBUG server{client.addr=113.12.37.105:51342}: accepted connection
 TRACE server{client.addr=106.42.126.8:56975} request{path="/" method=PUT}: closing connection
 ```
 
-The special sauce of the `tracing` crate is to provide structured context via a concept it calls spans. If you loved what you seen so far then continue reading this primer.
+The special sauce of the `tracing` crate is to provide structured context for logs via a concept it calls spans. If you loved what you seen so far then continue reading.
 
 ## Fundamental Blocks of Tracing
 
@@ -53,7 +76,7 @@ Anther model will be vertical grouping of bars to represent a list of logs you m
 
 Log levels are very similar to what you will see in other logging libraries. Log levels add simple descriptors to logs to summarize and categorize logs. Log levels are present in logs by appending a description to the logs as shown below with this `debug` log
 
-```
+```shell
 DEBUG server::http: received request
 ```
 
