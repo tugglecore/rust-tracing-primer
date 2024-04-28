@@ -6,7 +6,7 @@ Tracing has estabished itself as the go-to library for logging in Rust community
 
 ## Tracing's Sale Pitch
 
-Here is my quick sale pitch for the `tracing` crate.
+Here is a modified snippet of a [blog post](https://tokio.rs/blog/2019-08-tracing) posted on the Tokio site about the tracing crate:
 
 If you normally see logs similar to the following:
 
