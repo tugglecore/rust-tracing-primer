@@ -2,14 +2,15 @@
 
 > Tokio's Tracing crate guide and explanation
 
-## Disclaimer
-First thing first, this primer is authored by a non-contributor conmmuntiy member and represent my own thoughts and not contributors, maintainers or authors of the [Tracing](https://github.com/tokio-rs) crate or any relatated crates. 
-
-Furthermore, all material here will be based on [Tracing version 0.1](https://github.com/tokio-rs/tracing/tree/v0.1.x) and as such all links will refer to pages related to Tracing's version 0.1 . At the time of writing, Tokio version 0.2 is unreleased.
-
 ## Introduction
+All material will be based on [Tracing version 0.1](https://github.com/tokio-rs/tracing/tree/v0.1.x) and as such all links will refer to pages related to Tracing's version 0.1 . At the time of writing, Tokio version 0.2 is unreleased.
 
 This is a guide and conceptual explaination of Tokio's [Tracing](https://github.com/tokio-rs/tracing/tree/v0.1x) crate and will not be a reference or a tutorial. Please refer to [Tracing's documentation](https://docs.rs/tracing/latest/tracing/) for a reference and more in-depth treatment of the [Tracing](https://github.com/tokio-rs/tracing/v0.1x) crate.
+
+Here is a [disclaimer](#disclaimer) for the present material.
+
+
+Without further ado, let's start tracing!
 
 ## 5 min Quick Start Guide
 
@@ -19,17 +20,22 @@ In a Rust project in a shell of your choosing, add the dependencies
 cargo add tracing tracing-subscriber
 ```
 
-then in your rust 
+then in your rust `main` function:
 
+```rust
+    fn main() {
+        let stdout_subscriber = tracing_subscriber::fmt::new();
 
+        tracing::subscriber::set_global_default(stdout_subscriber);
 
-## Introduction
+        tracing::info!("Look ma, I'm tracing!");
+    }
+```
 
-[Tracing](https://github.com/tokio-rs/tracing) has estabished itself as the go-to library for logging in Rust community. It's unique capability to provide structured, contextual logs in an asynchronous environments sets it apart from alternative logging crates. Nevertheless, I always struggle with its Documentation. So, here is my primer to the `tracing` crate.
 
 ## Tracing's Sale Pitch
 
-Here is a modified snippet of a [blog post](https://tokio.rs/blog/2019-08-tracing) posted on the Tokio site about the tracing crate:
+I believe this modified code snippet from a [blog post](https://tokio.rs/blog/2019-08-tracing) posted on the Tokio site about the tracing crate sums up the value of the Tracing crate:
 
 If you normally see logs similar to the following:
 
@@ -57,24 +63,14 @@ DEBUG server{client.addr=113.12.37.105:51342}: accepted connection
 TRACE server{client.addr=106.42.126.8:56975} request{path="/" method=PUT}: closing connection
 ```
 
-The special sauce of the `tracing` crate is to provide structured context for logs via a concept it calls spans. If you loved what you seen so far then continue reading.
+This is the special sauce of the `tracing` crate: structured context for logs.
 
 ## Fundamental Blocks of Tracing
 
-Let's talk about the `tracing` crate. There are three fundamental concepts to the `tracing` crate: `event`s, `span`s and `level`s. 
-
-Throughout this primer we will use several types of diagrams to model the excution of a promgram. We will add, remove and color different features of this model. One model of importance will be a timeline representing a program executing over time:
-
-
-![Basic timeline model a program](./assets/basic_model.png)
-
-Anther model will be vertical grouping of bars to represent a list of logs you may see in some console:
-
-![Program log list](./assets/program_log_list.png)
-
+Let's talk about the `tracing` crate. There are three fundamental concepts to the `tracing` crate: `event`, `level`, `span` and `subscriber`. 
 ### Log Level
 
-Log levels are very similar to what you will see in other logging libraries. Log levels add simple descriptors to logs to summarize and categorize logs. Log levels are present in logs by appending a description to the logs as shown below with this `debug` log
+Log levels are very similar to what you will see in other logging libraries. Log levels add simple descriptors to summarize and categorize logs. Log levels are present in logs by appending a description to the logs as shown below with this `debug` log
 
 ```shell
 DEBUG server::http: received request
@@ -98,15 +94,15 @@ Events represent some occurence or some phenomenon happening at some moment in t
 event!(Level::Info, "Finish building CSV; 128k records written into CSV")
 ```
 
-Notice, how the `event` macro accepts a log level. The log level aids in program diagnosis during benchmarking, debugging or general compresion. Let's model this event on a timeline representing some given program:
+Notice, how the `event` macro accepts a log level. The log level aids in program diagnosis during benchmarking, debugging or general comprehension. Let's model this event on a timeline representing some given program:
 
 ![single event on program timeline](./assets/single_event_timeline.png)
 
-There is one question to ask about this model which cannot be answered. What are the events that led to this event? Said differently, what was going on in the program, or what was the context, when this event was generated? The answer to this could be instrumental when investigating the behavior of a program. This leads us to the concept of spans.
+One question to ask is what are the events that led to this event? Said differently, what was going on in the program, or what was the context, when this event was generated? The answer to this could be instrumental to understanding the behavior of a program. This leads us to the concept of spans.
 
 ### Spans
 
-Spans represent some period of time, or more practically, some unit of work. They are the answer to the preceeding section's question. They provide context for events for which can describe the conditions for a given event.
+Spans represent some period of time, or more practically, some unit of work. They provide context for events for which can describe the conditions for a given event.
 
 Let's see how to create a span in code:
 
@@ -125,7 +121,7 @@ drop(guard);
 
 Here we created a `span`, entered the `span`, perform some work and generated an event then drop the `span` or *exited* the span.
 
-Now you more than likely will create and work with spans with the macro `instrument` such as:
+It's recommended to create spans with the macro `instrument` such as:
 
 ```rust
 #[instrument]
@@ -173,7 +169,5 @@ Layers are not Subscribers and as such will not assign ids to spans yet they pos
 
 Summing up, the Registry will handle span id generation while Layers will read and can write the tracing data, to say, a file or to generate a flamegraph. This brings us back to our opening example and we are finally able to see some code. Run the example `layered`
 
-
-
-
-
+## Disclaimer
+This primer is authored by a non-contributor conmmuntiy member and represent my own thoughts and not contributors, maintainers or authors of the [Tracing](https://github.com/tokio-rs) crate or any relatated crates. 
