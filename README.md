@@ -23,14 +23,14 @@ cargo add tracing tracing-subscriber
 then in your rust `main` function:
 
 ```rust
-    fn main() {
-        let stdout_subscriber = tracing_subscriber::fmt::init();
+fn main() {
+    let stdout_subscriber = tracing_subscriber::fmt::init();
 
-        tracing::info!("Look ma, I'm tracing!");
-    }
+    tracing::info!("Look ma, I'm tracing!");
+}
 
-    // OUTPUT
-    // 2024-04-29T05:16:27.782106Z  INFO tracer: Look ma, I'm tracing!
+// OUTPUT
+// 2024-04-29T05:16:27.782106Z  INFO tracer: Look ma, I'm tracing!
 ```
 
 
