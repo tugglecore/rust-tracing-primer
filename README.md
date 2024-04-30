@@ -24,9 +24,7 @@ then in your rust `main` function:
 
 ```rust
     fn main() {
-        let stdout_subscriber = tracing_subscriber::fmt::new();
-
-        tracing::subscriber::set_global_default(stdout_subscriber);
+        let stdout_subscriber = tracing_subscriber::fmt::init();
 
         tracing::info!("Look ma, I'm tracing!");
     }
@@ -70,10 +68,10 @@ This is the special sauce of the `tracing` crate: structured context for logs.
 
 ## Fundamental Blocks of Tracing
 
-Let's talk about the `tracing` crate. There are three fundamental concepts to the `tracing` crate: `event`, `level`, `span` and `subscriber`. 
+Let's talk about the `tracing` crate. There are four fundamental concepts to the `tracing` crate: `event`, `level`, `span` and `subscriber`. 
 ### Log Level
 
-Log levels are very similar to what you will see in other logging libraries. Log levels add simple descriptors to summarize and categorize logs. Log levels are present in logs by appending a description to the logs as shown below with this `debug` log
+Log levels are very similar to what you will see in other logging libraries. Log levels add simple descriptors to summarize and categorize logs. Log levels are present in logs by prepending a description to the logs as shown below with this `debug` log
 
 ```shell
 DEBUG server::http: received request
@@ -87,7 +85,7 @@ It is very difficult to identify any subset of logs from this list of logs. Furt
 
 ![Logs with log levels](./assets/with_log_levels.png)
 
-Each log line has a color representative of its log level. Now it becomes easier to group related logs.
+Each log line has a color representative of its log level. Now it becomes easier to filter for desired logs specific to certain levels such as `INFO` or `ERROR`.
 
 ### Events
 
@@ -142,7 +140,7 @@ fn save_grades() {
 
 Let's partially model this program to demonstrate the concept of spans:
 
-![spans with events](./assets/two_spans_with_events.png)
+![spans with events](./assets/program_model_two_spans_20240430.png)
 
 
 Each event happens within the context of a span providing information on the conditions for which caused an event to generate and illustrate the overall execution of a program.
@@ -171,6 +169,14 @@ A registry is a subscriber, provided by the `tracing-subscriber` crate, with the
 Layers are not Subscribers and as such will not assign ids to spans yet they posses much of the same behavior as Subscribers such as reading spans and events and normally they will send the tracing data to some medium. Most importantly, you can multiple Layers active on a given thread since a layer.
 
 Summing up, the Registry will handle span id generation while Layers will read and can write the tracing data, to say, a file or to generate a flamegraph. This brings us back to our opening example and we are finally able to see some code. Run the example `layered`
+
+# Resources
+
+Here are some other helpful resources by the community which are helpful:
+
+- [Decrusting the tracing crate](https://www.youtube.com/watch?v=21rtHinFA40)
+- [Are we observable yet? An introduction to Rust telemtry](https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/)
+- [Get started with Tracing in Rust](https://www.shuttle.rs/blog/2024/01/09/getting-started-tracing-rust)
 
 ## Disclaimer
 This primer is authored by a non-contributor conmmuntiy member and represent my own thoughts and not contributors, maintainers or authors of the [Tracing](https://github.com/tokio-rs) crate or any relatated crates. 
